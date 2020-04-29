@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\User;
 use Illuminate\Http\Request;
 
-class PriceController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        //
+        return view('admin.index');
     }
 
     /**
@@ -44,10 +44,9 @@ class PriceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($minPrice, $maxPrice)
+    public function show($id)
     {
-        $products = Product::whereBetween('price', [$minPrice, $maxPrice])->get();
-        return view('all-products', compact(['products']));
+        //
     }
 
     /**
@@ -81,6 +80,6 @@ class PriceController extends Controller
      */
     public function destroy($id)
     {
-        
+        //
     }
 }

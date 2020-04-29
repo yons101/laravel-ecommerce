@@ -1,57 +1,144 @@
 @extends('layouts.app')
 
 @section('content')
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@elseif(session('success'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@if (10==0)
+<div class="text-center d-flex flex-column align-items-center justify-content-center" style="height:30vh">
+    <h1 class="text-capitalize">you have no item in your cart!</h1>
+    <a class="btn btn-light" role="button" href="{{route('index')}}">Go Back To Home Page</a>
+</div>
+
+@else
 
 <h2 class="ml-1"><i class="far fa-credit-card"></i>&nbsp;Checkout</h2>
 <div class="row mt-5">
-    <div class="col-12 col-md-6 payment">
-        <div class="card credit-card-box mx-3">
-            <div class="card-header">
-                <h3 class="d-flex justify-content-between align-items-center"><span class="panel-title-text">Payment Details </span><img class="img-fluid panel-title-image w-50" src="assets/img/payment-methods.png"></h3>
-            </div>
-            <div class="card-body border rounded">
-                <form id="payment-form">
-                    <div class="form-row">
-                        <div class="col-12">
-                            <div class="form-group"><label for="cardNumber">Card number </label>
-                                <div class="input-group"><input class="form-control" type="tel" id="cardNumber" required="" placeholder="Valid Card Number">
-                                    <div class="input-group-append"><span class="input-group-text"><i class="fas fa-credit-card"></i></span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-7">
-                            <div class="form-group"><label for="cardExpiry"><span>expiration </span><span>EXP
-                                    </span> date</label><input class="form-control" type="tel" id="cardExpiry" required="" placeholder="MM / YY"></div>
-                        </div>
-                        <div class="col-5 pull-right">
-                            <div class="form-group"><label for="cardCVC">cv code</label><input class="form-control" type="tel" id="cardCVC" required="" placeholder="CVC">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-12"><button class="btn btn-block btn-lg text-white bg-dark" type="submit">Place Order</button></div>
-                    </div>
-                </form>
-            </div>
+    <div class="col-12 col-md-8">
+
+        <h3>You have {{Auth::user()->cart->products->count()}} item(s) in your cart</h3>
+
+        <div class="d-flex flex-column p-5">
+            @if($products->isNotEmpty())
+            <table class="table table-striped table-responsive-md">
+                <thead>
+                    <tr>
+                        <th scope="col">img</th>
+                        <th scope="col">title</th>
+                        <th scope="col">qty</th>
+                        <th scope="col">price</th>
+                        <th scope="col">delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- Products that have the same id, used for quantiy--}}
+                    @foreach($products as $row)
+
+                    @foreach ($row as $item)
+
+                    @if ($item->id != $lastId)
+
+                    <tr>
+                        @php
+                        $lastId = $item->id;
+                        @endphp
+
+                        <td class="align-middle">
+                            <a href="{{route('products.show', $item->slug)}}" class="text-dark">
+                                <img src="{{$item->image}}" alt="" style="width:4rem;">
+                            </a>
+                        </td>
+
+                        <td class="align-middle">
+                            <a href="{{route('products.show', $item->slug)}}" class="text-dark">
+                                {{$item->title}}
+                            </a>
+                        </td>
+
+                        <td class="align-middle">
+                            <form action="{{route('cart.update', $item->id)}}" method="post" class="d-inline-block m-0">
+                                @csrf
+                                @method('PUT')
+                                <input class="" type="number" name="qty" value="{{count($row)}}" style="width:3rem;"
+                                    onchange="show({{$item->id}})">
+                                <input type="hidden" name="id" value="{{$item->id}}">
+                                <button id="{{'confirm_' . $item->id}}" class="btn p-0 m-0" type="submit"
+                                    style="display:none;">✔️</button>
+                            </form>
+                        </td>
+
+                        <td class="align-middle">{{$item->price * count($row)}} DH</td>
+
+                        <td class="align-middle">
+                            <form class="m-0" action="{{route('cart.destroy', $item->id)}}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-dark" type="submit">X</button>
+                            </form>
+                        </td>
+
+                    </tr>
+                    @endif
+
+                    @endforeach
+
+                    @endforeach
+
+                </tbody>
+            </table>
+            @else
+            <h1>No products</h1>
+            @endif
+            <form action="{{route('cart.empty')}}" method="post">
+                @csrf
+                <button class="btn btn-dark mt-5" type="submit">Empty the cart</button>
+            </form>
         </div>
     </div>
-    <div class="col-12 col-md-6">
-        <h3>Your Order</h3>
-        <div class="d-flex flex-column p-5">
+
+    <div class="col-12 col-md-4 p-md-5">
+        <div class="mt-5 d-flex justify-content-between h2">
+            <span>Total</span>
             <div>
-                <ul class="list-group">
-                    <li class="list-group-item"><span>List Group Item 1</span></li>
-                    <li class="list-group-item"><span>List Group Item 2</span></li>
-                    <li class="list-group-item"><span><br>List Group Item 3<br><br>List Group Item 3<br><br>List
-                            Group Item 3<br><br>List Group Item 3<br><br></span></li>
-                </ul>
-            </div>
-            <div class="mt-5 d-flex justify-content-between h2"><span>Total</span>
-                <div><span class="mr-1">5000</span><span>DH</span></div>
+                <span class="mr-1">{{$totalPrice}}</span>
+                <span>DH</span>
             </div>
         </div>
+
+        <form action="{{route('checkout.index')}}" method="get">
+            @csrf
+            <button class="btn btn-dark d-block w-100 mt-5 mx-auto" id="btn-checkout" type="submit">
+                Check Out</button>
+        </form>
+
     </div>
 </div>
+@endif
+
+
 @endsection
+
+<script>
+    function show(id) {
+    var x = document.getElementById("confirm_" + id);
+        
+        x.style.display = "inline-block";
+    }
+</script>

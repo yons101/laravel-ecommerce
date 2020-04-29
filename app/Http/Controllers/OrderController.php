@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class PriceController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,11 @@ class PriceController extends Controller
      */
     public function index()
     {
-        //
+        // $orders = Auth::user()->orders;
+        $orders = Auth::user()->orders()->latest()->paginate(5);;
+        $i = 0;
+        return view('orders', compact(['orders', 'i']))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -35,7 +40,16 @@ class PriceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $order = Order::create($request->all());
+        $products = Auth::user()->cart->products()->get()->groupBy('id');
+
+        foreach ($products as $product) {
+            $order->products()->attach($product);
+        }
+        // Auth::user()->cart->products()->detach();
+
+        return redirect()->route('order.index')
+            ->with('success', 'Your Order Has Been Submitted.');
     }
 
     /**
@@ -44,10 +58,9 @@ class PriceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($minPrice, $maxPrice)
+    public function show($id)
     {
-        $products = Product::whereBetween('price', [$minPrice, $maxPrice])->get();
-        return view('all-products', compact(['products']));
+        //
     }
 
     /**
@@ -81,6 +94,6 @@ class PriceController extends Controller
      */
     public function destroy($id)
     {
-        
+        //
     }
 }

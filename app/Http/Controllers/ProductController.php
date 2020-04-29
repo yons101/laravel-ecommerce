@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
-        $products = Product::inRandomOrder()->take(4)->get();
+        $products = Product::where('title', 'like', "%$product->title%")->inRandomOrder()->take(4)->get();
 
         return view('single-product', compact(['products', 'product']));
     }

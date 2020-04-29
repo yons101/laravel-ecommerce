@@ -1,7 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-light">
+        <li class="breadcrumb-item"><a href="/" class="text-dark">Home</a></li>
+        <li class="breadcrumb-item active">
+
+            @if(isset($title))
+            All Our {{$title}}'s
+            @else
+            All products
+
+            @endif
+
+            </a></li>
+    </ol>
+</nav>
+<div class="row mt-5">
 
     <div class="col-md-3">
         <h3 class="mb-5">Sort By</h3>
@@ -36,14 +52,11 @@
             <h3 class="mb-4">
                 @if(isset($title))
 
-                All our {{$title}}'s
+                All Our {{$title}}'s
                 @else
                 All products
 
                 @endif
-
-
-
 
             </h3>
 
@@ -56,12 +69,15 @@
                 <div class="col-12 col-sm-4 mb-4">
                     <a class="text-decoration-none text-dark" href="/products/{{$product->slug}}">
 
-                        <div class="card shadow-sm text-center"><img class="card-img-top w-100 d-block product-img" src="{{$product->image}}">
+                        <div class="card shadow-sm text-center"><img class="card-img-top w-100 d-block product-img"
+                                src="{{$product->image}}">
 
                             <div class="card-body d-flex justify-content-between align-items-center">
-                                <h4 class="card-title mb-0 text-capitalize">{{ Str::replaceArray('-', [' '], $product->title) }}</h4>
+                                <h4 class="card-title mb-0 text-capitalize">
+                                    {{ Str::replaceArray('-', [' '], $product->title) }}</h4>
 
-                                <div><span class="badge badge-dark"><span class="mr-1">{{$product->price}}</span><span>DH</span></span>
+                                <div><span class="badge badge-dark"><span
+                                            class="mr-1">{{$product->price}}</span><span>DH</span></span>
 
                                 </div>
                             </div>

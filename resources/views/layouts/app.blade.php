@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,41 +37,50 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/Footer-Basic.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/Navigation-Clean.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 
-
-
+    @yield('script')
+    @yield('style')
     {{-- end mine --}}
 </head>
+
 <body>
+
+
     <div id="app">
 
         <header>
             <nav class="navbar navbar-light navbar-expand-md navigation-clean mb-0">
-                <div class="container"><a class="navbar-brand" href="{{ url('/') }}"><i class="fab fa-apple logo"></i>Apple101</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
+                <div class="container"><a class="navbar-brand" href="{{ url('/') }}"><i
+                            class="fab fa-apple logo"></i>Apple101</a><button data-toggle="collapse"
+                        class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
 
                             navigation</span><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navcol-1">
                         <ul class="nav navbar-nav mx-auto">
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="{{route('category.show', 'iphone')}}">iPhone</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link"
+                                    href="{{route('category.show', 'iphone')}}">iPhone</a></li>
 
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="{{route('category.show', 'mac')}}">Mac</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link"
+                                    href="{{route('category.show', 'mac')}}">Mac</a></li>
 
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="{{route('category.show', 'ipad')}}">iPad</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link"
+                                    href="{{route('category.show', 'ipad')}}">iPad</a></li>
 
 
                         </ul>
-                        <ul class="nav navbar-nav">
+                        <ul class="nav navbar-nav ml-0">
 
 
                             @guest
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link" href="{{ route('login') }}">
-                                    <i class=" fas fa-user"></i>
+                                    Login
                                 </a>
                             </li>
 
@@ -84,24 +94,72 @@
 
 
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
 
+                                {{-- Check if the user is a user --}}
+                                @if (Auth::user()->roles[0]->name != "admin")
+
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item" href="{{route('profile.index')}}">
+                                        Profile
+                                    </a>
+                                    <a class="dropdown-item" href="/orders">
+                                        Orders
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                                                        document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        style="display: none;">
                                         @csrf
                                     </form>
                                 </div>
                             </li>
 
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="{{ route('cart') }}"><i class=" fas fa-shopping-cart"></i></a></li>
+                            <li class="nav-item" role="presentation">
+                                {{-- d-flex align-items-center --}}
+                                <a class="nav-link" href="{{ route('cart.index') }}">
+                                    <i class="fas fa-shopping-cart mr-1"></i>
 
+                                    @if(Auth::user()->cart->products->count()>0)
+                                    <span>{{Auth::user()->cart->products->count()}}</span>
+
+                                    @endif
+                                </a>
+
+                            </li>
+
+                            {{-- Check if the user is an admin --}}
+                            @else
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{route('productmanager.index')}}">
+                                    Product Manager
+                                </a>
+                                <a class="dropdown-item" href="{{route('usermanager.index')}}">
+                                    Users Manager
+                                </a>
+                                <a class="dropdown-item" href="/orders">
+                                    Orders Manager
+                                </a>
+
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                            @endif
                             @endguest
 
                         </ul>
@@ -113,6 +171,7 @@
 
             <main class="py-4">
 
+
                 @yield('content')
 
             </main>
@@ -120,7 +179,9 @@
 
         <div class="footer-basic">
             <footer>
-                <div class="social"><a href="#"><i class="icon ion-social-instagram"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-facebook"></i></a>
+                <div class="social"><a href="#"><i class="icon ion-social-instagram"></i></a><a href="#"><i
+                            class="icon ion-social-twitter"></i></a><a href="#"><i
+                            class="icon ion-social-facebook"></i></a>
                 </div>
                 <ul class="list-inline">
                     <li class="list-inline-item"><a href="#">Home</a></li>
@@ -138,7 +199,7 @@
         <script src="assets/js/bs-init.js"></script>
     </div>
 
-
+    @yield('script2')
 </body>
 
 </html>

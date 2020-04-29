@@ -1,8 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-light ">
+        <li class="breadcrumb-item "><a href="/" class="text-dark">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{route('products.index')}}" class="text-dark">Products</a></li>
+        <li class="breadcrumb-item active text-capitalize " aria-current="page">
+            {{ Str::replaceArray('-', [' '], $product->title) }}</li>
+    </ol>
+</nav>
 
-<div class="row">
+<div class="row mt-5">
     <div class="col-12 col-md-6" id="product-col-1"><img class="w-75" src="{{$product->image}}"></div>
 
     <div class="col-12 col-md-6 d-flex flex-column justify-content-between" id="product-col-2">
@@ -11,13 +19,30 @@
 
 
 
-            <div id="product-price"><span class="badge badge-dark p-3"><span class="mr-1">{{$product->price}}</span><span>DH</span></span>
+            <div id="product-price"><span class="badge badge-dark p-3"><span
+                        class="mr-1">{{$product->price}}</span><span>DH</span></span>
 
             </div>
         </div>
         <p id="product-desc">{{$product->description}}<br><br><br></p>
 
-        <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center" data-bs-hover-animate="pulse" id="product-cto" type="button">Add to Cart</button>
+        {{-- {{dd($product->id)}} --}}
+
+        <form
+            action="{{ Auth::user()->roles[0]->name != "admin" ? route('cart.store') : route('productmanager.edit', $product->id)}}"
+            method="{{ Auth::user()->roles[0]->name != "admin" ? 'POST' : 'GET'}}">
+            @csrf
+            <input type="hidden" name="id" id="id" value="{{$product->id}}">
+            <input type="hidden" name="title" id="title" value="{{$product->title}}">
+            <input type="hidden" name="price" id="price" value="{{$product->price}}">
+            @if (Auth::user()->roles[0]->name != "admin")
+            <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
+                data-bs-hover-animate="pulse" id="product-cto" type="submit">Add to Cart</button>
+            @else
+            <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
+                data-bs-hover-animate="pulse" id="product-cto" type="submit">Edit Product</button>
+            @endif
+        </form>
 
     </div>
 </div>
@@ -27,20 +52,17 @@
     <div class="col-12 col-sm-6 col-md-3">
         <a class="text-decoration-none text-dark" href="{{$product->slug}}">
 
-            <div class="card shadow-sm text-center"><img class="card-img-top w-100 d-block product-img" src="{{$product->image}}">
-
-
-
-
-
+            <div class="card shadow-sm text-center"><img class="card-img-top w-100 d-block product-img"
+                    src="{{$product->image}}">
 
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0 text-capitalize">{{ Str::replaceArray('-', [' '], $product->title) }}</h4>
-
-
-
-                    <div><span class="badge badge-dark"><span class="mr-1">{{$product->price}}</span><span>DH</span></span>
-
+                    <h4 class="card-title mb-0 text-capitalize">{{ Str::replaceArray('-', [' '], $product->title) }}
+                    </h4>
+                    <div>
+                        <span class="badge badge-dark">
+                            {{$product->price}}
+                            <span>DH</span>
+                        </span>
                     </div>
                 </div>
             </div>
