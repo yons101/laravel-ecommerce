@@ -1,4 +1,5 @@
-<select id="country" name="country" class="form-control">
+<select id="country" name="country" class="form-control @error('country') is-invalid @enderror" required
+    value="{{ old('country') }}">
     <option value="Afganistan">Afghanistan</option>
     <option value="Albania">Albania</option>
     <option value="Algeria">Algeria</option>

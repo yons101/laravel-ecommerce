@@ -126,6 +126,20 @@
 
                     <div class="form-group row">
                         <div class="col-md-12">
+                            <label for="country">Country</label>
+
+                            @include('inc.country-list')
+
+                            @error('country')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
                             <input id="card_no" type="text" class="form-control @error('card_no') is-invalid @enderror"
                                 name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no"
                                 placeholder="Card No." autofocus>

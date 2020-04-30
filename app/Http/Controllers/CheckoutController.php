@@ -44,6 +44,7 @@ class CheckoutController extends Controller
             'province' => 'required',
             'zip' => 'required',
             'phone' => 'required',
+            'country' => 'required',
         ];
 
         $this->validate($request, $validation);
@@ -70,12 +71,11 @@ class CheckoutController extends Controller
                     'province' => $request->province,
                     'zip' => $request->zip,
                     'phone' => $request->phone,
+                    'country' => $request->country,
                 ],
             ]);
             if ($charge['status'] == 'succeeded') {
-                return redirect()->route('thank-you', compact([
-
-                ]))->with('success', 'Your order has been successfully placed!');
+                return redirect()->route('thank-you', compact([]))->with('success', 'Your order has been successfully placed!');
             } else {
                 return redirect()->route('checkout.index')->with('error', 'Your order has been declined!');
             }
