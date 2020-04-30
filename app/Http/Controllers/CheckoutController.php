@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class CheckoutController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $products = Auth::user()->cart->products()->get()->groupBy('id');
@@ -21,75 +21,70 @@ class CheckoutController extends Controller
         // dd($products, $totalPrice);
         $lastId = 0;
 
-        return view('sandbox', compact(['lastId', 'products', 'totalPrice']));
+        return view('checkout', compact(['lastId', 'products', 'totalPrice']));
     }
 
 
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        dd($request->request);
-    }
+        // dd($request->request);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $validator = Validator::make($request->all(), []);
+        $input = $request->all();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        $validation = [
+            'card_no' => 'required',
+            'exp_month' => 'required',
+            'exp_year' => 'required',
+            'cvv' => 'required',
+            'amount' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'zip' => 'required',
+            'phone' => 'required',
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $this->validate($request, $validation);
+        $stripe = Stripe::make('sk_test_gKIw0KKS2QV9SPkYvPUoHURc00dTwu0tos');
+        try {
+            $token = $stripe->tokens()->create([
+                'card' => [
+                    'number'    => $request->get('card_no'),
+                    'exp_month' => $request->get('exp_month'),
+                    'exp_year'  => $request->get('exp_year'),
+                    'cvc'       => $request->get('cvv'),
+                ],
+            ]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            $charge = $stripe->charges()->create([
+                'card' => $token['id'],
+                'currency' => 'USD',
+                'amount'   => $request->amount,
+                'description' => 'Add in wallet',
+                'metadata' => [
+                    'name' => $request->name,
+                    'address' => $request->address,
+                    'city' => $request->city,
+                    'province' => $request->province,
+                    'zip' => $request->zip,
+                    'phone' => $request->phone,
+                ],
+            ]);
+            if ($charge['status'] == 'succeeded') {
+                return redirect()->route('thank-you', compact([
+
+                ]))->with('success', 'Your order has been successfully placed!');
+            } else {
+                return redirect()->route('checkout.index')->with('error', 'Your order has been declined!');
+            }
+        } catch (Exception $e) {
+            return redirect()->route('checkout.index')->with('error', $e->getMessage());
+        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            return redirect()->route('checkout.index')->with('error', $e->getMessage());
+        } catch (\Cartalyst\Stripe\Exception\MissingParameterException $e) {
+            return redirect()->route('checkout.index')->with('error', $e->getMessage());
+        }
     }
 }

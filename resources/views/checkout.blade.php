@@ -10,6 +10,22 @@
 @section('content')
 
 <h2 class="ml-1"><i class="far fa-credit-card"></i>&nbsp;Checkout</h2>
+
+@if ($message = Session::get('success'))
+<div class="custom-alerts alert alert-success">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    {!! $message !!}
+</div>
+<?php Session::forget('success');?>
+@endif
+@if ($message = Session::get('error'))
+<div class="custom-alerts alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    {!! $message !!}
+</div>
+<?php Session::forget('error');?>
+@endif
+
 <div class="row mt-5">
 
 
@@ -26,61 +42,161 @@
                 <form action="{{route('checkout.store')}}" method="post" id="payment-form">
                     {{-- onsubmit="event.preventDefault();" --}}
                     @csrf
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="address">Full Address</label>
-                        <input type="text" class="form-control" id="address" name="address">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" class="form-control" id="city" name="city">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="province">Province</label>
-                        <input type="text" class="form-control" id="province" name="province">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="zip">Zip</label>
-                        <input type="text" class="form-control" id="zip" name="zip">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" class="form-control" id="phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="card-element">
-                            Credit or debit card
-                        </label>
-                        <div id="card-element">
-                            <!-- A Stripe Element will be inserted here. -->
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="name">Full Name</label>
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                                name="name" required value="{{ old('name') }}">
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
-
-                        <!-- Used to display form errors. -->
-                        <div id="card-errors" role="alert"></div>
                     </div>
 
-                    <button class="btn btn-dark mt-2">Submit Payment</button>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="address">Full Address</label>
+                            <input id="address" type="text" class="form-control @error('address') is-invalid @enderror"
+                                name="address" required value="{{ old('address') }}">
+                            @error('address')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="city">City</label>
+                            <input id="city" type="text" class="form-control @error('city') is-invalid @enderror"
+                                name="city" required value="{{ old('city') }}">
+                            @error('city')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="province">Province</label>
+                            <input id="province" type="text"
+                                class="form-control @error('province') is-invalid @enderror" name="province" required
+                                value="{{ old('province') }}">
+                            @error('province')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="zip">Postal Code</label>
+                            <input id="zip" type="text" class="form-control @error('zip') is-invalid @enderror"
+                                name="zip" required value="{{ old('zip') }}">
+                            @error('zip')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="phone">Phone</label>
+                            <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror"
+                                name="phone" required value="{{ old('phone') }}">
+                            @error('phone')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <input id="card_no" type="text" class="form-control @error('card_no') is-invalid @enderror"
+                                name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no"
+                                placeholder="Card No." autofocus>
+                            @error('card_no')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <input id="exp_month" type="text"
+                                class="form-control @error('exp_month') is-invalid @enderror" name="exp_month"
+                                value="{{ old('exp_month') }}" required autocomplete="exp_month"
+                                placeholder="Exp. Month (Eg. 02)" autofocus>
+                            @error('exp_month')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <input id="exp_year" type="text"
+                                class="form-control @error('exp_year') is-invalid @enderror" name="exp_year"
+                                value="{{ old('exp_year') }}" required autocomplete="exp_year"
+                                placeholder="Exp. Year (Eg. 2020)" autofocus>
+                            @error('exp_year')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror"
+                                name="cvv" required value="{{ old('username') }}" placeholder="CVV">
+                            @error('cvv')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror"
+                                name="amount" required placeholder="Amount" value="{{$totalPrice}}">
+                            @error('amount')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row mb-0">
+                        <div class="col-md-12">
+                            <button class="btn btn-dark mt-2">Submit Payment</button>
+                        </div>
+                    </div>
+
                 </form>
-                {{-- <form action="{{route('orders.store')}}" method="post">
-                <input type="hidden" name="user_id" value="{{Auth::id()}}">
 
-                @csrf
-
-                <button type="button">ok</button>
-                </form> --}}
             </div>
         </div>
     </div>
     <div class="col-12 col-md-6">
-        <h3>Your Order</h3>
+        <h3>Your Cart</h3>
         @if(isset($products) && $products->isNotEmpty())
 
         <table class="table table-striped table-responsive-md">

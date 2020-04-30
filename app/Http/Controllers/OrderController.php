@@ -15,7 +15,6 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // $orders = Auth::user()->orders;
         $orders = Auth::user()->orders()->latest()->paginate(5);
         $i = 0;
         return view('orders.index', compact(['orders', 'i']))
@@ -40,6 +39,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+
+        // dd($request);
         $order = Order::create($request->all());
         $products = Auth::user()->cart->products()->get()->groupBy('id');
         $orders = Auth::user()->orders()->latest()->paginate(5);

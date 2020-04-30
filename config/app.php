@@ -177,6 +177,7 @@ return [
 
 
 
+        Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
 
     ],
 
@@ -192,7 +193,7 @@ return [
     */
 
     'aliases' => [
-
+        'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

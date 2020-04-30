@@ -63,14 +63,15 @@
         event.preventDefault();
 
 
-        // var options = {
-        //     // name: document.getElementById('name').value,
-        //     address_line1: document.getElementById('address').value,
-        //     adress_city: document.getElementById('city').value,
-        //     adress_state: document.getElementById('province').value,
-        //     adress_zip: document.getElementById('zip').value,
-        // }
-        stripe.createToken(card).then(function (result) {
+        var options = {
+            name: document.getElementById('name').value,
+            address_line1: document.getElementById('address').value,
+            adress_city: document.getElementById('city').value,
+            adress_state: document.getElementById('province').value,
+            adress_zip: document.getElementById('zip').value,
+            address_country: document.getElementById('country').value,
+        }
+        stripe.createToken(card, options).then(function (result) {
             if (result.error) {
                 // Inform the user if there was an error.
                 var errorElement = document.getElementById('card-errors');

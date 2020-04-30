@@ -15,37 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <script src="https://js.stripe.com/v3/"></script>
 
-    <style>
-        .StripeElement {
-            box-sizing: border-box;
 
-            height: 40px;
-
-            padding: 10px 12px;
-
-            border: 1px solid transparent;
-            border-radius: 4px;
-            background-color: white;
-
-            box-shadow: 0 1px 3px 0 #e6ebf1;
-            -webkit-transition: box-shadow 150ms ease;
-            transition: box-shadow 150ms ease;
-        }
-
-        .StripeElement--focus {
-            box-shadow: 0 1px 3px 0 #cfd7df;
-        }
-
-        .StripeElement--invalid {
-            border-color: #fa755a;
-        }
-
-        .StripeElement--webkit-autofill {
-            background-color: #fefde5 !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -180,7 +151,7 @@
                     </div>
                     <div class="card-body border rounded">
 
-                        <form action="{{route('checkout.store')}}" method="post" id="payment-form">
+                        <form action="{{route('sandbox.store')}}" method="post" id="payment-form">
                             {{-- onsubmit="event.preventDefault();" --}}
                             @csrf
                             <div class="form-group">
@@ -191,6 +162,11 @@
                             <div class="form-group">
                                 <label for="address">Full Address</label>
                                 <input type="text" class="form-control" id="address" name="address">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
                             </div>
 
                             <div class="form-group">
@@ -207,32 +183,98 @@
                                 <label for="zip">Zip</label>
                                 <input type="text" class="form-control" id="zip" name="zip">
                             </div>
-
                             <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="tel" class="form-control" id="phone" name="phone">
+                                <label for="country">Country</label>
+                                @include('inc.country-list')
                             </div>
-                            <div class="form-group">
+
+                            {{-- <div class="form-group">
                                 <label for="card-element">
                                     Credit or debit card
                                 </label>
-                                <div id="card-element">
+                                <div id="card-element" class="form-control">
                                     <!-- A Stripe Element will be inserted here. -->
                                 </div>
 
                                 <!-- Used to display form errors. -->
                                 <div id="card-errors" role="alert"></div>
+                            </div> --}}
+
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="card_no" type="text"
+                                        class="form-control @error('card_no') is-invalid @enderror" name="card_no"
+                                        value="{{ old('card_no') }}" required autocomplete="card_no"
+                                        placeholder="Card No." autofocus>
+                                    @error('card_no')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input id="exp_month" type="text"
+                                        class="form-control @error('exp_month') is-invalid @enderror" name="exp_month"
+                                        value="{{ old('exp_month') }}" required autocomplete="exp_month"
+                                        placeholder="Exp. Month (Eg. 02)" autofocus>
+                                    @error('exp_month')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="exp_year" type="text"
+                                        class="form-control @error('exp_year') is-invalid @enderror" name="exp_year"
+                                        value="{{ old('exp_year') }}" required autocomplete="exp_year"
+                                        placeholder="Exp. Year (Eg. 2020)" autofocus>
+                                    @error('exp_year')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="cvv" type="password"
+                                        class="form-control @error('cvv') is-invalid @enderror" name="cvv" required
+                                        autocomplete="current-password" placeholder="CVV">
+                                    @error('cvv')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input id="amount" type="text"
+                                        class="form-control @error('amount') is-invalid @enderror" name="amount"
+                                        required autocomplete="current-password" placeholder="Amount">
+                                    @error('amount')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row mb-0">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        {{ __('PAY NOW') }}
+                                    </button>
+                                </div>
+                            </div>
+
 
                             <button class="btn btn-dark mt-2">Submit Payment</button>
                         </form>
-                        {{-- <form action="{{route('orders.store')}}" method="post">
-                        <input type="hidden" name="user_id" value="{{Auth::id()}}">
 
-                        @csrf
-
-                        <button type="button">ok</button>
-                        </form> --}}
                     </div>
                 </div>
             </div>
@@ -330,97 +372,5 @@
 </body>
 
 
-<script>
-    // Create a Stripe client.
-    var stripe = Stripe('pk_test_rk0ZnuvxgbWgyAtrvbZcrO0m00g2m55VTD');
-    
-    // Create an instance of Elements.
-    var elements = stripe.elements();
-    
-    // Custom styling can be passed to options when creating an Element.
-    // (Note that this demo uses a wider set of styles than the guide below.)
-    var style = {
-    base: {
-    color: '#32325d',
-    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-    fontSmoothing: 'antialiased',
-    fontSize: '16px',
-    '::placeholder': {
-    color: '#aab7c4'
-    }
-    },
-    invalid: {
-    color: '#fa755a',
-    iconColor: '#fa755a'
-    }
-    
-    };
-    
-    // Create an instance of the card Element.
-    var card = elements.create('card', {
-    style: style,
-    hidePostalCode: true
-    });
-    
-    // Add an instance of the card Element into the `card-element` <div>.
-        card.mount('#card-element');
-    
-        // Handle real-time validation errors from the card Element.
-        card.addEventListener('change', function (event) {
-    
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-        displayError.textContent = event.error.message;
-        } else {
-        displayError.textContent = '';
-        }
-        });
-    
-        // Handle form submission.
-        var form = document.getElementById('payment-form');
-    
-        form.addEventListener('submit', function (event) {
-    
-    
-        event.preventDefault();
-    
-    
-        // var options = {
-        // // name: document.getElementById('name').value,
-        // address_line1: document.getElementById('address').value,
-        // adress_city: document.getElementById('city').value,
-        // adress_state: document.getElementById('province').value,
-        // adress_zip: document.getElementById('zip').value,
-        // }
-        stripe.createToken(card).then(function (result) {
-        if (result.error) {
-        // Inform the user if there was an error.
-        var errorElement = document.getElementById('card-errors');
-        errorElement.textContent = result.error.message;
-    
-        } else {
-        // Send the token to your server.
-    
-        stripeTokenHandler(result.token);
-    
-        }
-        });
-        });
-    
-        // Submit the form with the token ID.
-        function stripeTokenHandler(token) {
-    
-        // Insert the token ID into the form so it gets submitted to the server
-        var form = document.getElementById('payment-form');
-        var hiddenInput = document.createElement('input');
-        hiddenInput.setAttribute('type', 'hidden');
-        hiddenInput.setAttribute('name', 'stripeToken');
-        hiddenInput.setAttribute('value', token.id);
-        form.appendChild(hiddenInput);
-    
-        // Submit the form
-        form.submit();
-        }
-</script>
 
 </html>
