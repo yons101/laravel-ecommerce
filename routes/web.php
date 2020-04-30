@@ -20,6 +20,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+// Route::get('/sandbox', function () {
+//     return view('sandbox');
+// });
+
 Route::get('/', 'MainController@index')->name('index');
 Route::resource('category', 'CategoryController');
 // Route::resource('cart', 'CartController');
@@ -44,9 +49,12 @@ Route::group(['middleware' => ['auth']], function () {
     //Orders
     Route::resource('/orders', 'OrderController');
 
-    Route::get('/checkout', 'CheckoutController@index')->name('checkout.index');
-    Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
 
+    Route::get('/sandbox', 'CheckoutController@index')->name('checkout.index');
+    Route::post('/sandbox', 'CheckoutController@store')->name('checkout.store');
+
+    // Route::get('/checkout', 'CheckoutController@index')->name('checkout.index');
+    // Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');
     //cart
     Route::get('/cart', 'CartController@index')->name('cart.index');
     Route::post('/cart', 'CartController@store')->name('cart.store');

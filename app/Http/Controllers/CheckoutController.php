@@ -21,7 +21,7 @@ class CheckoutController extends Controller
         // dd($products, $totalPrice);
         $lastId = 0;
 
-        return view('checkout', compact(['lastId', 'products', 'totalPrice']));
+        return view('sandbox', compact(['lastId', 'products', 'totalPrice']));
     }
 
 
@@ -45,7 +45,7 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-    
+        dd($request->request);
     }
 
     /**
