@@ -20,11 +20,12 @@
         </thead>
 
         <tbody>
-            @foreach ($orders as $order)
-            @foreach ($order->products as $item)
+
+            @foreach ($products as $item)
+
             <tr>
                 <td class="align-middle">{{++$i}}</td>
-                <td class="align-middle">{{$order->id}}</td>
+                <td class="align-middle">{{$id}}</td>
                 <td class="align-middle w-25">
                     <a class="text-dark" href="{{route('products.show', $item->slug)}}">
                         <img src="{{$item->image}}" class="w-50">
@@ -32,15 +33,14 @@
                 </td>
                 <td class="align-middle w-25"><a class="text-dark"
                         href="{{route('products.show', $item->slug)}}">{{$item->title}}</a></td>
-                <td class="align-middle w-25">{{$item->price}}</td>
+                <td class="align-middle w-25">{{$item->price}} DH</td>
             </tr>
-            @endforeach
             @endforeach
 
         </tbody>
     </table>
     <div class="d-flex justify-content-center">
-        {!! $orders->links() !!}
+        {!! $products->links() !!}
     </div>
     <input type="hidden" name="fullname" value="">
     <input type="hidden" name="username" value="">

@@ -12,7 +12,7 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return view('all-products', compact('products'));
+        return view('products.index', compact('products'));
     }
 
 
@@ -21,6 +21,6 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->firstOrFail();
         $products = Product::where('title', 'like', "%$product->title%")->inRandomOrder()->take(4)->get();
 
-        return view('single-product', compact(['products', 'product']));
+        return view('products.show', compact(['products', 'product']));
     }
 }

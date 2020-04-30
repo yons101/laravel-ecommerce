@@ -13,7 +13,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = Auth::user()->profile;
 
-        return view('profile', compact(['user', 'profile']));
+        return view('profiles.index', compact(['user', 'profile']));
     }
 
     public function edit($id)
@@ -21,7 +21,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = Auth::user()->profile;
 
-        return view('profile-edit', compact(['user', 'profile']));
+        return view('profiles.edit', compact(['user', 'profile']));
     }
 
     public function update(Request $request, $id)

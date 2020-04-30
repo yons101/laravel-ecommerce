@@ -56,10 +56,10 @@
 
         <header>
             <nav class="navbar navbar-light navbar-expand-md navigation-clean mb-0">
-                <div class="container"><a class="navbar-brand" href="{{ url('/') }}"><i
-                            class="fab fa-apple logo"></i>Apple101</a><button data-toggle="collapse"
+                <div class="container"><a class="navbar-brand" href="{{ url('/') }}"><i class="fab fa-apple logo"
+                            ></i>Apple101</a><button data-toggle="collapse"
                         class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
-
+{{-- style="transform: rotate(90deg);" --}}
                             navigation</span><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navcol-1">
                         <ul class="nav navbar-nav mx-auto">
@@ -145,7 +145,7 @@
                                 <a class="dropdown-item" href="{{route('usermanager.index')}}">
                                     Users Manager
                                 </a>
-                                <a class="dropdown-item" href="/orders">
+                                <a class="dropdown-item" href="{{route('ordermanager.index')}}">
                                     Orders Manager
                                 </a>
 

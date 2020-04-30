@@ -47,7 +47,7 @@ class PriceController extends Controller
     public function show($minPrice, $maxPrice)
     {
         $products = Product::whereBetween('price', [$minPrice, $maxPrice])->get();
-        return view('all-products', compact(['products']));
+        return view('products.index', compact(['products']));
     }
 
     /**

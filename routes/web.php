@@ -27,12 +27,7 @@ Route::get('/price/{mix}/{max}', 'PriceController@show')->name('price.show');
 
 Route::get('/products', 'ProductController@index')->name('products.index');
 Route::get('/products/{id}', 'ProductController@show')->name('products.show');
-// Route::view('/product', 'product');
-// Route::view('/all-products', 'all-products');
-// Route::view('/cart', 'cart')->name("cart");
-// Route::view('/checkout', 'checkout');
-// Route::view('/thank-you', 'thank-you');
-// Route::view('/master', 'master');
+
 
 Auth::routes();
 
@@ -47,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     //Orders
-    Route::resource('/order', 'OrderController');
+    Route::resource('/orders', 'OrderController');
 
     Route::get('/checkout', 'CheckoutController@index')->name('checkout.index');
     Route::post('/checkout', 'CheckoutController@store')->name('checkout.store');

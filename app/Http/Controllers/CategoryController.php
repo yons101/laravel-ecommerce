@@ -47,7 +47,7 @@ class CategoryController extends Controller
     public function show($title)
     {
         $products = Product::where('title', 'like', "%$title%")->get();
-        return view('all-products', compact(['products', 'title']));
+        return view('products.index', compact(['products', 'title']));
     }
 
     /**

@@ -69,11 +69,11 @@
                 </form> --}}
 
 
-                <form action="{{route('order.store')}}" method="post">
+                <form action="{{route('orders.store')}}" method="post">
                     <input type="hidden" name="user_id" value="{{Auth::id()}}">
 
                     @csrf
-                        <button type="submit">ok</button>
+                    <button type="submit">ok</button>
                 </form>
             </div>
         </div>

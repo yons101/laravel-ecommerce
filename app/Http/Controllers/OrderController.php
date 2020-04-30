@@ -16,9 +16,9 @@ class OrderController extends Controller
     public function index()
     {
         // $orders = Auth::user()->orders;
-        $orders = Auth::user()->orders()->latest()->paginate(5);;
+        $orders = Auth::user()->orders()->latest()->paginate(5);
         $i = 0;
-        return view('orders', compact(['orders', 'i']))
+        return view('orders.index', compact(['orders', 'i']))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
@@ -42,14 +42,17 @@ class OrderController extends Controller
     {
         $order = Order::create($request->all());
         $products = Auth::user()->cart->products()->get()->groupBy('id');
+        $orders = Auth::user()->orders()->latest()->paginate(5);
+        $i = 0;
+
 
         foreach ($products as $product) {
             $order->products()->attach($product);
         }
-        // Auth::user()->cart->products()->detach();
+        Auth::user()->cart->products()->detach();
 
-        return redirect()->route('order.index')
-            ->with('success', 'Your Order Has Been Submitted.');
+        return view('orders.index', compact(['orders', 'i']))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -60,7 +63,10 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $products = Order::findOrFail($id)->products()->latest()->paginate(5);
+        $i = 0;
+        return view('orders.show', compact(['products', 'i', 'id']))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
