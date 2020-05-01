@@ -46,8 +46,10 @@ class PriceController extends Controller
      */
     public function show($minPrice, $maxPrice)
     {
-        $products = Product::whereBetween('price', [$minPrice, $maxPrice])->get();
-        return view('products.index', compact(['products']));
+        $products = Product::whereBetween('price', [$minPrice, $maxPrice])->latest()->paginate(12);
+
+        return view('products.index', compact(['products']))
+            ->with((request()->input('page', 1) - 1) * 12);
     }
 
     /**
@@ -81,6 +83,5 @@ class PriceController extends Controller
      */
     public function destroy($id)
     {
-        
     }
 }
