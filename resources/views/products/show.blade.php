@@ -28,21 +28,31 @@
 
         {{-- {{dd($product->id)}} --}}
 
+
+
+        @if(Auth::user()!==null)
         <form
             action="{{ Auth::user()->roles[0]->name != "admin" ? route('cart.store') : route('productmanager.edit', $product->id)}}"
             method="{{ Auth::user()->roles[0]->name != "admin" ? 'POST' : 'GET'}}">
-            @csrf
-            <input type="hidden" name="id" id="id" value="{{$product->id}}">
-            <input type="hidden" name="title" id="title" value="{{$product->title}}">
-            <input type="hidden" name="price" id="price" value="{{$product->price}}">
-            @if (Auth::user()->roles[0]->name != "admin")
-            <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
-                data-bs-hover-animate="pulse" id="product-cto" type="submit">Add to Cart</button>
             @else
-            <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
-                data-bs-hover-animate="pulse" id="product-cto" type="submit">Edit Product</button>
-            @endif
-        </form>
+            <form action="{{route('cart.store')}}" method="POST">
+                @endif
+
+                @csrf
+                <input type="hidden" name="id" id="id" value="{{$product->id}}">
+                <input type="hidden" name="title" id="title" value="{{$product->title}}">
+                <input type="hidden" name="price" id="price" value="{{$product->price}}">
+
+
+                @if(Auth::user() == null or Auth::user()->roles[0]->name != "admin")
+                <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
+                    data-bs-hover-animate="pulse" id="product-cto" type="submit">Add to Cart</button>
+                @elseif(Auth::user()->roles[0]->name == "admin")
+                <button class="btn btn-dark text-uppercase text-center d-lg-flex align-items-lg-start text-center"
+                    data-bs-hover-animate="pulse" id="product-cto" type="submit">Edit Product</button>
+
+                @endif
+            </form>
 
     </div>
 </div>
